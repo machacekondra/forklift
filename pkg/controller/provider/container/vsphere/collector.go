@@ -2,6 +2,7 @@ package vsphere
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	liburl "net/url"
 	"path"
@@ -342,16 +343,21 @@ func (r *Collector) getUpdates(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("Test 1")
 	defer r.close()
+	fmt.Println("Test 11")
 	about := r.client.ServiceContent.About
+	fmt.Println(about)
 	err = r.db.Insert(
 		&model.About{
 			APIVersion: about.ApiVersion,
 			Product:    about.LicenseProductName,
 		})
+	fmt.Println("Test 13")
 	if err != nil {
 		return err
 	}
+	fmt.Println("Test 2")
 	pc := property.DefaultCollector(r.client.Client)
 	pc, err = pc.Create(ctx)
 	if err != nil {
@@ -364,11 +370,13 @@ func (r *Collector) getUpdates(ctx context.Context) error {
 	if err != nil {
 		return liberr.Wrap(err)
 	}
+	fmt.Println("Test 3")
 	mark := time.Now()
 	req := types.WaitForUpdatesEx{
 		This:    pc.Reference(),
 		Options: filter.Options,
 	}
+	fmt.Println("Test 4")
 	var tx *libmodel.Tx
 	watchList := []*libmodel.Watch{}
 	defer func() {
@@ -380,6 +388,7 @@ func (r *Collector) getUpdates(ctx context.Context) error {
 			tx.End()
 		}
 	}()
+	fmt.Println("Test 5")
 	for {
 		response, err := methods.WaitForUpdatesEx(ctx, r.client, &req)
 		if err != nil {
@@ -395,6 +404,7 @@ func (r *Collector) getUpdates(ctx context.Context) error {
 			}
 			return liberr.Wrap(err)
 		}
+		fmt.Println("Test 6")
 		updateSet := response.Returnval
 		if updateSet == nil {
 			continue
@@ -404,6 +414,7 @@ func (r *Collector) getUpdates(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
+		fmt.Println("Test 7")
 		for _, fs := range updateSet.FilterSet {
 			err = r.apply(ctx, tx, fs.ObjectSet)
 			if err != nil {
@@ -413,6 +424,7 @@ func (r *Collector) getUpdates(ctx context.Context) error {
 				break
 			}
 		}
+		fmt.Println("Test 8")
 		if err == nil {
 			err = tx.Commit()
 		} else {
@@ -423,6 +435,7 @@ func (r *Collector) getUpdates(ctx context.Context) error {
 				err,
 				"tx commit failed.")
 		}
+		fmt.Println("Test 9")
 		if updateSet.Truncated == nil || !*updateSet.Truncated {
 			if !r.parity {
 				r.parity = true
