@@ -346,6 +346,7 @@ type VM struct {
 	ToolsRunningStatus       string             `sql:""`
 	ToolsVersionStatus       string             `sql:""`
 	DiskEnableUuid           bool               `sql:""`
+	GuestApps                string             `sql:""`
 	NestedHVEnabled          bool               `sql:""`
 	CustomDef                []CustomFieldDef   `sql:""`
 	CustomValues             []CustomFieldValue `sql:""`

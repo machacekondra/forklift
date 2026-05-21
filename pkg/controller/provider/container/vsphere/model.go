@@ -858,6 +858,10 @@ func (v *VmAdapter) Apply(u types.ObjectUpdate) {
 								}
 								v.model.DiskEnableUuid = boolVal
 							}
+						} else if opt.Key == "guestinfo.appInfo" {
+							if s, cast := opt.Value.(string); cast {
+								v.model.GuestApps = s
+							}
 						} else if hasDiskPrefix(opt.Key) && strings.HasSuffix(strings.ToLower(opt.Key), "."+strings.ToLower(CtkEnabledKey)) {
 							if s, cast := opt.Value.(string); cast {
 								boolVal, err := strconv.ParseBool(s)
