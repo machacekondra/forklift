@@ -347,11 +347,18 @@ type VM struct {
 	ToolsVersionStatus       string           `sql:""`
 	DiskEnableUuid           bool             `sql:""`
 	NestedHVEnabled          bool             `sql:""`
+	GuestApps                []GuestApp         `sql:""`
 }
 
 // Determine if current revision has been validated.
 func (m *VM) Validated() bool {
 	return m.RevisionValidated == m.Revision
+}
+
+// Guest application.
+type GuestApp struct {
+	Name    string `json:"name"`
+	Version string `json:"version,omitempty"`
 }
 
 // Virtual Controller.
