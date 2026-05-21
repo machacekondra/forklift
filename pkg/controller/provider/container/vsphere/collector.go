@@ -684,16 +684,6 @@ func (r *Collector) connect(ctx context.Context) (status int, err error) {
 		r.close()
 		return
 	}
-
-	if r.client.IsVC() {
-		r.restClient = rest.NewClient(r.client.Client)
-		userInfo := liburl.UserPassword(r.user(), r.password())
-		err = r.restClient.Login(ctx, userInfo)
-		if err != nil {
-			r.close()
-			return 0, liberr.Wrap(err)
-		}
-	}
 	return http.StatusOK, nil
 }
 
